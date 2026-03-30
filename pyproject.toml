@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "touchcam"
+version = "0.1.0"
+description = "Cross-platform webcam touch/hover detector with calibration GUI"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE.md" }
+authors = [
+  { name = "Project Sistine contributors" },
+]
+dependencies = [
+  "numpy>=1.26",
+  "opencv-python>=4.10",
+  "PySide6>=6.7",
+  "pynput>=1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "pyinstaller>=6.10",
+]
+
+[project.scripts]
+touchcam = "touchcam.main:main"
+touchcam-cli = "touchcam.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

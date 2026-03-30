@@ -1,37 +1,67 @@
-# Project Sistine
+# TouchCam (modernized Project Sistine)
 
-![Sistine * 3/2](splash.png)
+TouchCam is a modern, Python 3, cross-platform evolution of the 2018 Project Sistine prototype.
+It keeps the original idea (finger + reflection based touch inference from webcam video), and adds:
 
-We turned a MacBook into a touchscreen using only $1 of hardware and a little bit of computer vision. The proof-of-concept, dubbed “Project Sistine” after our [recreation](https://www.anishathalye.com/media/2018/04/03/thumbnail.jpg) of the famous [painting](https://en.wikipedia.org/wiki/The_Creation_of_Adam) in the Sistine Chapel, was prototyped by [Anish Athalye](https://www.anishathalye.com/), [Kevin Kwok](https://twitter.com/antimatter15), [Guillermo Webster](https://twitter.com/biject), and [Logan Engstrom](https://github.com/lengstrom) in about 16 hours.
+- modern dependencies (Python 3.10+, OpenCV 4, Qt GUI)
+- installable package with command-line entry points
+- calibration-aware GUI app
+- cross-platform mouse output pipeline (Windows/macOS/Linux)
+- GitHub Actions CI/CD for linting, tests, and executable builds
 
-## Basic Principle
+## Quick start
 
-The basic principle behind Sistine is simple. Surfaces viewed from an angle tend to look shiny, and you can tell if a finger is touching the surface by checking if it’s touching its own reflection.
+```bash
+python -m pip install --upgrade pip
+pip install .
+touchcam
+```
 
-![Hover versus touch](https://www.anishathalye.com/media/2018/04/03/explanation.png)
+This launches the desktop app.
 
-Kevin, back in middle school, noticed this phenomenon and built [ShinyTouch](https://antimatter15.com/project/shinytouch/), utilizing an external webcam to build a touch input system requiring virtually no setup. We wanted to see if we could miniaturize the idea and make it work without an external webcam. Our idea was to retrofit a small mirror in front of a MacBook’s built-in webcam, so that the webcam would be looking down at the computer screen at a sharp angle. The camera would be able to see fingers hovering over or touching the screen, and we’d be able to translate the video feed into touch events using computer vision.
+## Headless smoke run
 
-(Read the rest of our blog post, including a video demo and a high-level explanation of the algorithm, [here](https://www.anishathalye.com/2018/04/03/macbook-touchscreen/))
+```bash
+touchcam-cli --seconds 5
+```
 
-## Installation (with Homebrew Python)
+This runs the detection pipeline for 5 seconds and prints detections.
 
-* First, make sure you have [Mac Homebrew](https://brew.sh/) installed on your computer. If not, you can install it by running `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+## GUI features
 
-* Install Python 2 via Homebrew with `brew install python2`
+- Live camera preview
+- Start/Stop pipeline controls
+- Camera index selector
+- Dry-run mouse mode for safety/testing
+- Calibration workflow (multi-point perspective mapping)
 
-* Install OpenCV 3 via Homebrew with `brew install opencv3`
+## Calibration flow
 
-* Install PyObjC via Pip with `pip2 install pyobjc`
+1. Start the pipeline.
+2. Position your finger over each target on your screen.
+3. Click **Start calibration** and then **Capture next point** until complete.
+4. The app computes a homography to map camera coordinates to screen coordinates.
 
-## Running
+## Development
 
-Run `python2 sistine.py`
+```bash
+pip install -e .[dev]
+ruff check src
+```
 
-## License
+## Packaging executables
 
-Copyright (c) 2016-2018 Anish Athalye, Kevin Kwok, Guillermo Webster, and Logan
-Engstrom. Released under the MIT License. See [LICENSE.md][license] for
-details.
+Local:
 
-[license]: LICENSE.md
+```bash
+pip install -e . pyinstaller
+pyinstaller --noconfirm --clean --name touchcam --onefile scripts/run_touchcam.py
+```
+
+CI builds artifacts for:
+
+- `ubuntu-latest`
+- `windows-latest`
+- `macos-latest`
+
+See `.github/workflows/build.yml`.
