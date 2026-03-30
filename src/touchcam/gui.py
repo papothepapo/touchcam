@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QSpinBox,
-    QVBoxLayout,
     QWidget,
 )
 
